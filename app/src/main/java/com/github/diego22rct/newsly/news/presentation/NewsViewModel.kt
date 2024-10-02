@@ -9,6 +9,7 @@ import com.github.diego22rct.appsuperzound.list_album.data.repository.NewsReposi
 import com.github.diego22rct.newsly.common.Resource
 import com.github.diego22rct.newsly.news.data.local.NewDao
 import com.github.diego22rct.newsly.news.data.local.NewEntity
+import com.github.diego22rct.newsly.news.data.local.toNew
 import com.github.diego22rct.newsly.news.domain.model.New
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -18,8 +19,20 @@ class NewsViewModel(private val newsRepository: NewsRepository, private val newD
     private val _newsList = mutableStateOf<List<New>>(emptyList())
     val newsList: MutableState<List<New>> get() = _newsList
 
+    private val _favoriteNewsList = mutableStateOf<List<New>>(emptyList())
+    val favoriteNewsList: MutableState<List<New>> get() = _favoriteNewsList
+
+
     init {
         fetchNews()
+        fetchFavoriteNews()
+    }
+
+    fun fetchFavoriteNews() {
+        viewModelScope.launch {
+            val favoriteNewsEntities = newsRepository.getFavoriteNews()
+            _favoriteNewsList.value = favoriteNewsEntities.map { it.toNew() }
+        }
     }
 
     private fun fetchNews() {
@@ -55,6 +68,7 @@ class NewsViewModel(private val newsRepository: NewsRepository, private val newD
             author = new.author ?: "Unknown author",
             title = new.title,
             description = new.description ?: "",
+            publishedAt = new.publishedAt,
             urlToImage = new.urlToImage ?: "",
         )
         newDao.insert(newEntity)

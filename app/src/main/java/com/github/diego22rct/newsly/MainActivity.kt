@@ -115,7 +115,7 @@ class MainActivity : ComponentActivity() {
                             SearchNewsScreen(newsViewModel)
                         }
                         composable(route = Screens.favoriteNews.route) {
-                            FavoriteNewsScreen()
+                            FavoriteNewsScreen(newsViewModel)
                         }
                     }
                 }

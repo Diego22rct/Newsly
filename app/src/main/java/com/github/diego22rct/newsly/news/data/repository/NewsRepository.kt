@@ -35,8 +35,13 @@ class NewsRepository(private val service: NewsService, private val newDao: NewDa
             new.author.toString(),
             new.title,
             new.description.toString(),
+            new.publishedAt.toString(),
             new.urlToImage.toString()
         )
         newDao.insert(newEntity)
+    }
+
+    suspend fun getFavoriteNews(): List<NewEntity> = withContext(Dispatchers.IO) {
+        newDao.fetchAll()
     }
 }

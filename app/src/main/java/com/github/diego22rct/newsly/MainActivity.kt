@@ -11,21 +11,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -34,24 +19,42 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
+import com.github.diego22rct.appsuperzound.list_album.data.repository.NewsRepository
+import com.github.diego22rct.newsly.common.Constants
 import com.github.diego22rct.newsly.common.Screens
 import com.github.diego22rct.newsly.home.presentation.HomeScreen
+import com.github.diego22rct.newsly.news.data.local.AppDatabase
+import com.github.diego22rct.newsly.news.data.remote.NewsService
 import com.github.diego22rct.newsly.news.presentation.FavoriteNewsScreen
+import com.github.diego22rct.newsly.news.presentation.NewsViewModel
 import com.github.diego22rct.newsly.news.presentation.SearchNewsScreen
 import com.github.diego22rct.newsly.ui.theme.NewslyTheme
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val dao = Room
+            .databaseBuilder(applicationContext, AppDatabase::class.java, "albums-db").build().getNews()
+        val listAlbumService: NewsService = Retrofit
+            .Builder()
+            .baseUrl(Constants.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(NewsService::class.java)
+
+        val newsRepository= NewsRepository(listAlbumService, dao)
+
+        val newsViewModel = NewsViewModel(newsRepository)
+
         enableEdgeToEdge()
         setContent {
             NewslyTheme {
@@ -109,7 +112,7 @@ class MainActivity : ComponentActivity() {
                             HomeScreen()
                         }
                         composable(route = Screens.findNews.route) {
-                            SearchNewsScreen()
+                            SearchNewsScreen(newsViewModel)
                         }
                         composable(route = Screens.favoriteNews.route) {
                             FavoriteNewsScreen()

@@ -16,7 +16,7 @@ class NewsRepository(private val service: NewsService, private val newDao: NewDa
             val response = service.getNews()
             if (response.isSuccessful) {
                 response.body()?.let { newsResponse ->
-                    val news = newsResponse.articles.map { it.toNew() }
+                    val news = newsResponse.map { it.toNew() }
                     return@withContext Resource.Success(data = news)
                 }
                 return@withContext Resource.Error(response.message())

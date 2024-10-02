@@ -16,5 +16,5 @@ data class NewEntity(
 )
 
 fun NewEntity.toNew() = New(
-    author, title, description, publishedAt ,urlToImage
+    author, title, description, publishedAt ,urlToImage, true
 )

@@ -33,9 +33,7 @@ fun SearchNewsScreen(newsViewModel: NewsViewModel) {
             LazyColumn {
                 items(newsList) { news ->
                     NewsItem(news, onFavoriteClick = {
-                        newsViewModel.viewModelScope.launch {
-                            newsViewModel.addFavoriteNew(it)
-                        }
+                        newsViewModel.toggleFavorite(it)
                     })
                 }
             }
@@ -64,7 +62,7 @@ fun NewsItem(news: New, onFavoriteClick: (New) -> Unit) {
                 )
             }
             Button(onClick = { onFavoriteClick(news) }) {
-                Text(if (news.favorite) "Unfavorite" else "Favorite")
+                Text(if (news.favorite == true) "Unfavorite" else "Favorite 💝")
             }
         }
     }

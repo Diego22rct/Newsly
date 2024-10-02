@@ -22,7 +22,6 @@ class NewsViewModel(private val newsRepository: NewsRepository, private val newD
     private val _favoriteNewsList = mutableStateOf<List<New>>(emptyList())
     val favoriteNewsList: MutableState<List<New>> get() = _favoriteNewsList
 
-
     init {
         fetchNews()
         fetchFavoriteNews()
@@ -43,11 +42,9 @@ class NewsViewModel(private val newsRepository: NewsRepository, private val newD
                     _newsList.value = result.data!!
                     Log.d("NewsViewModel", "Fetched news: ${result.data}")
                 }
-
                 is Resource.Error -> {
                     Log.d("NewsViewModel", "Error fetching news: ${result.message}")
                 }
-
                 is Resource.Loading -> {
                     Log.d("NewsViewModel", "Loading news...")
                 }
@@ -60,17 +57,5 @@ class NewsViewModel(private val newsRepository: NewsRepository, private val newD
         viewModelScope.launch {
             newsRepository.addFavoriteNew(news)
         }
-    }
-
-    suspend fun addFavoriteNew(new: New) {
-        val newEntity = NewEntity(
-            id = UUID.randomUUID().toString(),
-            author = new.author ?: "Unknown author",
-            title = new.title,
-            description = new.description ?: "",
-            publishedAt = new.publishedAt,
-            urlToImage = new.urlToImage ?: "",
-        )
-        newDao.insert(newEntity)
     }
 }

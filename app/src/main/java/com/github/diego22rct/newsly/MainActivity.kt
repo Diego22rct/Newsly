@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
 
         val newsRepository= NewsRepository(listAlbumService, dao)
 
-        val newsViewModel = NewsViewModel(newsRepository)
+        val newsViewModel = NewsViewModel(newsRepository, dao)
 
         enableEdgeToEdge()
         setContent {

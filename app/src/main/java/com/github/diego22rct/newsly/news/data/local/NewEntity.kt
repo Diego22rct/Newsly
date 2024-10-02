@@ -6,9 +6,9 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "news")
 data class NewEntity(
     @PrimaryKey
-    val idAlbum: String,
-    val strAlbum: String,
-    val strArtist: String,
-    val strAlbumThumb: String,
-    val intScore: String
+    val id: String,
+    val author: String,
+    val title: String,
+    val description: String,
+    val urlToImage : String,
 )

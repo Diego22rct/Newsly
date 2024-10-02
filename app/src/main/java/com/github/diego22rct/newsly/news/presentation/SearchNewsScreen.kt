@@ -12,9 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
 import com.github.diego22rct.newsly.news.domain.model.New
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
+import kotlinx.coroutines.launch
 
 @Composable
 fun SearchNewsScreen(newsViewModel: NewsViewModel) {
@@ -30,7 +32,11 @@ fun SearchNewsScreen(newsViewModel: NewsViewModel) {
             Text("Search News", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(16.dp))
             LazyColumn {
                 items(newsList) { news ->
-                    NewsItem(news)
+                    NewsItem(news, onFavoriteClick = {
+                        newsViewModel.viewModelScope.launch {
+                            newsViewModel.addFavoriteNew(it)
+                        }
+                    })
                 }
             }
         }
@@ -38,14 +44,14 @@ fun SearchNewsScreen(newsViewModel: NewsViewModel) {
 }
 
 @Composable
-fun NewsItem(news: New) {
+fun NewsItem(news: New, onFavoriteClick: (New) -> Unit) {
     Column(modifier = Modifier.padding(16.dp)) {
         Card(
             modifier = Modifier.padding(16.dp).fillMaxWidth(),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(news.author, style = MaterialTheme.typography.bodyMedium)
+                Text(news.author.toString(), style = MaterialTheme.typography.bodyMedium)
                 val year = news.publishedAt.substring(0, 4)
                 Text(year, style = MaterialTheme.typography.bodySmall)
                 GlideImage(
@@ -56,6 +62,9 @@ fun NewsItem(news: New) {
                         alignment = Alignment.Center
                     )
                 )
+            }
+            Button(onClick = { onFavoriteClick(news) }) {
+                Text(if (news.favorite) "Unfavorite" else "Favorite")
             }
         }
     }

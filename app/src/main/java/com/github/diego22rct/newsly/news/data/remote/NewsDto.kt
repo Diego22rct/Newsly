@@ -19,5 +19,5 @@ data class SourceDto(
 )
 
 fun NewsDto.toNew() = New(
-    publishedAt, author ?: "", urlToImage ?: "https://www.wolflair.com/wp-content/uploads/2017/01/placeholder.jpg"
+    publishedAt, author ?: "No Name", urlToImage ?: "https://www.wolflair.com/wp-content/uploads/2017/01/placeholder.jpg"
 )

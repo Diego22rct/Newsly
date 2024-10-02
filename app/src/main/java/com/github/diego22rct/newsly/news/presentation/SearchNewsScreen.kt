@@ -45,7 +45,7 @@ fun NewsItem(news: New) {
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(news.author ?: "Unknown author", style = MaterialTheme.typography.bodyMedium)
+                Text(news.author, style = MaterialTheme.typography.bodyMedium)
                 val year = news.publishedAt.substring(0, 4)
                 Text(year, style = MaterialTheme.typography.bodySmall)
                 GlideImage(
